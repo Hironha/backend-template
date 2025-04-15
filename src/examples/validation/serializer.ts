@@ -1,6 +1,7 @@
 import z from "zod";
 import { Input } from "@core/operator";
 import { type Result } from "@core/result";
+import { type ApiError } from "@core/error";
 import { type ValidationError } from "@core/validator";
 import { ZodValidator } from "@core/zod-validator";
 
@@ -16,6 +17,8 @@ const PersonSchema = z.object({
 });
 
 export interface Person extends z.infer<typeof PersonSchema> {}
+
+export type OutputCreatePerson = Result<Person, ApiError>;
 
 export class InputCreatePerson extends Input<Person> {
   constructor(private src: unknown) {

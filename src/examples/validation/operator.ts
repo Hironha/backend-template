@@ -1,10 +1,9 @@
 import { Operator } from "@core/operator";
 import { type Result } from "@core/result";
-import { type ApiError } from "@core/error";
-import { InputCreatePerson, type Person } from "./serializer";
+import { type InputCreatePerson, type Person, type OutputCreatePerson } from "./serializer";
 
-export class CreatePersonOperator extends Operator<InputCreatePerson, Person> {
-  protected async run(input: Person): Promise<Result<Person, ApiError>> {
+export class CreatePersonOperator extends Operator<InputCreatePerson, OutputCreatePerson> {
+  protected async run(input: Person): Promise<OutputCreatePerson> {
     console.debug(input);
     throw new Error("Operator not implemented yet.");
   }
