@@ -5,9 +5,21 @@ export type InferOk<R extends Result<any, any>> = ReturnType<R["unwrap"]>;
 export type InferErr<R extends Result<any, any>> = ReturnType<R["unwrapErr"]>;
 
 export interface ResultVariant<T, E> {
+  /**
+   * If `Result<T, E>` is `Right<T>` variant returns `T`, otherwise returns `undefiend`.
+   */
   ok(): T | undefined;
+  /**
+   * If `Result<T, E>` is `Err<E>` variant returns `E`, otherwise returns `undefiend`.
+   */
   err(): E | undefined;
+  /**
+   * Checks if the `Result<T, E>` is the variant `Ok<T>`.
+   */
   isOk(): this is Ok<T>;
+  /**
+   * Checks if the `Result<T, E>` is the variant `Err<E>`.
+   */
   isErr(): this is Err<E>;
   /**
    * Transforms from `T` to `U` using param `fn` and returns a new `Result<U, E>` object.
@@ -18,23 +30,23 @@ export interface ResultVariant<T, E> {
    */
   mapErr<U>(fn: (val: E) => U): Result<T, U>;
   /**
-   * Unwrap the `T` value and returns it.
-   * @throws {Error} May throw an `Error` if trying to unwrap an `Err` variant.
+   * Unwrap the `T` value from `Result<T, E>` and returns it.
+   * @throws {Error} May throw an `Error` if trying to unwrap an `Err<E>` variant.
    */
   unwrap(): T;
   /**
-   * Unwrap the `E` value and returns it.
-   * @throws {Error} May throw an `Error` if trying to unwrap an `Ok` variant.
+   * Unwrap the `E` value from `Result<T, E>` and returns it.
+   * @throws {Error} May throw an `Error` if trying to unwrap error an `Ok<T>` variant.
    */
   unwrapErr(): E;
   /**
-   * Unwrap the `T` value with a custom error message and returns it.
-   * @throws {Error} May throw an `Error` if trying to unwrap an `Err` variant.
+   * Unwrap the `T` value from `Result<T, E` with a custom error message and returns it.
+   * @throws {Error} May throw an `Error` if trying to expect an `Err<E>` variant.
    */
   expect(message: string): T;
   /**
-   * Unwrap the `E` value with a custom error message and returns it.
-   * @throws {Error} May throw an `Error` if trying to unwrap an `Ok` variant.
+   * Unwrap the `E` value from `Result<T, E>` with a custom error message and returns it.
+   * @throws {Error} May throw an `Error` if trying to expect error an `Ok<T>` variant.
    */
   expectErr(message: string): E;
 }
@@ -77,7 +89,7 @@ export class Ok<T> implements ResultVariant<T, never> {
   }
 
   unwrapErr(): never {
-    throw new Error("Invalid unwrap error of result 'Err' variant");
+    throw new Error("Invalid unwrap error of result 'Ok' variant");
   }
 
   expect(): T {
@@ -123,7 +135,7 @@ export class Err<E> implements ResultVariant<never, E> {
   }
 
   unwrap(): never {
-    throw new Error("Invalid unwrap of result 'Ok' variant");
+    throw new Error("Invalid unwrap of result 'Err' variant");
   }
 
   unwrapErr(): E {
