@@ -8,10 +8,10 @@ export interface Todo {
 }
 
 export class TodoEntity {
-  private id: string;
-  private description: string;
-  private createdAt: Date;
-  private updatedAt: Date;
+  readonly id: string;
+  description: string;
+  readonly createdAt: Date;
+  updatedAt: Date;
 
   constructor(todo: Todo) {
     this.id = todo.id;
@@ -27,29 +27,5 @@ export class TodoEntity {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-  }
-
-  getId(): string {
-    return this.id;
-  }
-
-  getDescription(): string {
-    return this.description;
-  }
-
-  setDescription(description: string): void {
-    this.description = description;
-  }
-
-  getCreatedAt(): Date {
-    return this.createdAt;
-  }
-
-  getUpdatedAt(): Date {
-    return this.updatedAt;
-  }
-
-  setUpdatedAt(updatedAt: Date): void {
-    this.updatedAt = updatedAt;
   }
 }

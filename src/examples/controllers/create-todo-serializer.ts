@@ -3,7 +3,7 @@ import { type Result } from "@core/result";
 import { type ValidationError } from "@core/validator";
 import { ZodValidator } from "@core/zod-validator";
 import { ValidatedInput } from "@core/input";
-import { type TodoEntity } from "../entities/todo";
+import { type TodoEntity } from "../entities/todo-entity";
 import { type TodoError } from "../errors/todo";
 import { type InputCreateTodoDto } from "../dtos/create-todo-dto";
 

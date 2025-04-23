@@ -1,5 +1,5 @@
 import { Err, Ok } from "@core/result";
-import { TodoEntity } from "../entities/todo";
+import { TodoEntity } from "../entities/todo-entity";
 import { TodoError } from "../errors/todo";
 import { type InputCreateTodoDto, type OutputCreateTodoDto } from "../dtos/create-todo-dto";
 

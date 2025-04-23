@@ -1,5 +1,5 @@
 import { type Result } from "@core/result";
-import { type TodoEntity } from "../entities/todo";
+import { type TodoEntity } from "../entities/todo-entity";
 import { type TodoError } from "../errors/todo";
 
 export interface InputCreateTodoDto {
