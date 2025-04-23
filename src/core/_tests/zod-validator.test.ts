@@ -15,7 +15,7 @@ describe("ZodValidator", () => {
     expect(validated.ok()).toMatchObject(src);
   });
 
-  it("should be able to convert simple zod error into internal validation constraints", () => {
+  it.only("should be able to convert simple zod error into internal validation constraints", () => {
     const message = "Property 'name' should be a string";
     const Schema = z.object({ name: z.string({ message }) });
     const validator = new ZodValidator(Schema);

@@ -28,32 +28,32 @@ export class ZodValidator<T> implements Validator<T> {
 }
 
 class ZodErrorMapper {
-  private constraints: ValidationConstraint[] = [];
-
-  constructor() {
-    this.constraints = [];
-  }
-
   mapToValidationConstraints(issues: z.ZodIssue[]): ValidationConstraint[] {
+    const constraints: ValidationConstraint[] = [];
+
+    console.dir(issues, { depth: Infinity });
+
     for (const issue of issues) {
       if (issue.path.length === 0) continue;
       if (issue.path.length === 1) {
         const field = issue.path[0].toString();
-        this.constraints.push({ field, message: issue.message });
+        constraints.push({ field, message: issue.message });
         continue;
       }
 
       const path = issue.path.slice(0, -1).map((p) => p.toString());
       const field = issue.path[issue.path.length - 1]!.toString();
-      const constraint = this.getOrInsertNestedConstraint(path);
+      const constraint = this.getOrInsertNestedConstraint(constraints, path);
       constraint.constraints.push({ field, message: issue.message });
     }
 
-    return this.constraints;
+    return constraints;
   }
 
-  private getOrInsertNestedConstraint(path: string[]): NestedValidationConstraint {
-    let constraints = this.constraints;
+  private getOrInsertNestedConstraint(
+    constraints: ValidationConstraint[],
+    path: string[],
+  ): NestedValidationConstraint {
     let target: NestedValidationConstraint | undefined;
     for (const field of path) {
       const current = constraints.find((c) => {

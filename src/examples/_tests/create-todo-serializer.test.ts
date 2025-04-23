@@ -1,7 +1,7 @@
 import { describe, it, expect } from "@jest/globals";
 import { InputCreateTodoZodValidator } from "../controllers/create-todo-serializer";
 
-describe("InputCreatePerson", () => {
+describe("InputCreateTodoZodValidator", () => {
   it("should be able to parse into create todo dto", () => {
     const src = { description: "test" };
     const input = new InputCreateTodoZodValidator(src);
