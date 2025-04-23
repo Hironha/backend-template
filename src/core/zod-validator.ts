@@ -31,8 +31,6 @@ class ZodErrorMapper {
   mapToValidationConstraints(issues: z.ZodIssue[]): ValidationConstraint[] {
     const constraints: ValidationConstraint[] = [];
 
-    console.dir(issues, { depth: Infinity });
-
     for (const issue of issues) {
       if (issue.path.length === 0) continue;
       if (issue.path.length === 1) {
