@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "bench": "ts-node src/core/_benchs/index.ts"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

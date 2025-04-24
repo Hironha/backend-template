@@ -74,7 +74,7 @@ const badInput = {
   },
 };
 
-new Benchmark("Comparison of zod and class-validator")
+export const benchmark = new Benchmark("Comparison of zod and class-validator")
   .addSuite(
     new Suite("Successful validation of nested objects", { times: 10_000 })
       .addTask(
@@ -100,5 +100,4 @@ new Benchmark("Comparison of zod and class-validator")
           .withInput(badInput)
           .executes((input) => validateWithClassValidator(input)),
       ),
-  )
-  .run();
+  );
