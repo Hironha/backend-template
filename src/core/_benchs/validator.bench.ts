@@ -4,20 +4,29 @@ import { ZodValidator } from "@core/zod-validator";
 import { ClassValidator } from "@core/class-validator";
 import { Task, Suite, Benchmark } from "@core/benchmark";
 
+const DEBUG = false;
+
 const ZodSchema = z.object({
   name: z.string({ message: "Property 'name' should be a string" }),
-  nested: z.object({
-    time: z.date({ message: "Property 'time' should a Date" }),
-  }),
+  nested: z.object(
+    {
+      time: z.date({ message: "Property 'time' should a Date" }),
+    },
+    { required_error: "Property 'nested' is required" },
+  ),
 });
 
 function validateWithZod(input: unknown): void {
   const validator = new ZodValidator(ZodSchema);
-  validator.validate(input);
+  const result = validator.validate(input);
+  if (DEBUG && result.isErr()) {
+    console.debug("Zod error");
+    console.dir(result.value, { depth: Infinity });
+  }
 }
 
 class ClassValidatorNestedSchema {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "Property 'time' should be a Date" })
   @IsDate({ message: "Property 'time' should be a Date" })
   time: Date;
 
@@ -31,7 +40,7 @@ class ClassValidatorSchema {
   @IsString({ message: "Property 'name' should be a string" })
   name: string;
 
-  @IsNotEmpty()
+  @IsNotEmpty({ message: "Property 'nested' is required" })
   @ValidateNested()
   nested: ClassValidatorNestedSchema;
 
@@ -43,27 +52,52 @@ class ClassValidatorSchema {
 
 function validateWithClassValidator(input: unknown): void {
   const validator = new ClassValidator(ClassValidatorSchema);
-  validator.validate(input);
+  const result = validator.validate(input);
+  if (DEBUG && result.isErr()) {
+    console.debug("Class validator error");
+    console.dir(result.value, { depth: Infinity });
+  }
 }
 
-const input = {
+const goodInput = {
   name: "test",
   nested: {
     time: new Date(),
   },
 };
 
-new Benchmark("Validations")
+const badInput = {
+  age: 12,
+  name: {
+    first: "firstname",
+    last: "lastname",
+  },
+};
+
+new Benchmark("Comparison of zod and class-validator")
   .addSuite(
-    new Suite("Validation with nested object", { times: 1000 })
+    new Suite("Successful validation of nested objects", { times: 10_000 })
       .addTask(
         new Task("Validation with zod")
-          .withInput(input)
+          .withInput(goodInput)
           .executes((input) => validateWithZod(input)),
       )
       .addTask(
         new Task("Validation with class-validator")
-          .withInput(input)
+          .withInput(goodInput)
+          .executes((input) => validateWithClassValidator(input)),
+      ),
+  )
+  .addSuite(
+    new Suite("Validation with error with nested objects", { times: 10_000 })
+      .addTask(
+        new Task("Validation with zod")
+          .withInput(badInput)
+          .executes((input) => validateWithZod(input)),
+      )
+      .addTask(
+        new Task("Validation with class-validator")
+          .withInput(badInput)
           .executes((input) => validateWithClassValidator(input)),
       ),
   )

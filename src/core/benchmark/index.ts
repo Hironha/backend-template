@@ -18,21 +18,21 @@ export class Benchmark {
   }
 
   run(): void {
-    console.debug(`Benchmark "${this.name}"`);
+    console.debug(`Benchmark "${this.name}"\n`);
 
     for (const suite of this.suites) {
       const meta = suite.run();
-      console.debug(`Suite "${meta.name}"`);
-      console.debug(`Times executed: ${meta.times}`);
+      console.debug(`> Suite "${meta.name}"`);
+      console.debug(`  Times executed: ${meta.times}\n`);
       if (meta.description) {
         console.debug(`Description: ${meta.description}`);
       }
 
-      console.debug(`  Tasks:`);
       for (const task of meta.tasks) {
-        console.debug(`    Name: ${task.name}`);
-        console.debug(`    Total μs: ${task.totalMicrosec}`);
-        console.debug(`    Average μs: ${task.totalMicrosec / task.runs.length}\n`);
+        const averageTime = task.totalMicrosec / task.runs.length;
+        console.debug(`  > Task "${task.name}"`);
+        console.debug(`    Total time: ${task.totalMicrosec.toFixed(2)}μs`);
+        console.debug(`    Average time: ${averageTime.toFixed(2)}μs\n`);
       }
     }
   }
