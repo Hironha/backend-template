@@ -1,6 +1,6 @@
 import { type Result } from "@core/result";
 
-export interface Validator<T> {
+export interface Validator<T extends Record<string, any> = any> {
   validate(value: unknown): Result<T, ValidationError>;
 }
 

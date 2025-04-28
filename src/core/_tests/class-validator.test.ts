@@ -49,11 +49,10 @@ describe("ClassValidator", () => {
     const src = { name: 12 };
     const validated = validator.validate(src);
 
-    const error = {
-      constraints: [{ field: "name", message }],
-    } satisfies ValidationError;
     expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject(error);
+    expect(validated.err()).toMatchObject({
+      constraints: [{ field: "name", message }],
+    });
   });
 
   it("should be able to convert complex object class validator error into internal validation constraints", () => {
@@ -109,7 +108,8 @@ describe("ClassValidator", () => {
     };
     const validated = validator.validate(src);
 
-    const error = {
+    expect(validated.isErr()).toBeTruthy();
+    expect(validated.err()).toMatchObject({
       constraints: [
         { field: "name", message: "expected string" },
         {
@@ -120,8 +120,6 @@ describe("ClassValidator", () => {
           ],
         },
       ],
-    } satisfies ValidationError;
-    expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject(error);
+    });
   });
 });

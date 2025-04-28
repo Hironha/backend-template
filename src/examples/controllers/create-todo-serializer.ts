@@ -1,8 +1,10 @@
 import z from "zod";
+import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { type Result } from "@core/result";
 import { type ValidationError } from "@core/validator";
 import { ZodValidator } from "@core/zod-validator";
 import { ValidatedInput } from "@core/input";
+import { ClassValidator } from "@core/class-validator";
 import { type TodoEntity } from "../entities/todo-entity";
 import { type TodoError } from "../errors/todo";
 import { type InputCreateTodoDto } from "../dtos/create-todo-dto";
@@ -13,7 +15,10 @@ export type OutputCreateTodo = Result<TodoEntity, TodoError>;
 
 const TodoSchema = z.object({
   description: z
-    .string({ message: "Property 'description' is a required string" })
+    .string({
+      required_error: "Property 'description' is required",
+      invalid_type_error: "Property 'description' should be a string",
+    })
     .trim()
     .max(256, { message: "Property 'description' cannot have more than 128 characters" }),
 });
@@ -24,6 +29,27 @@ export class InputCreateTodoZodValidator extends ValidatedInput<InputCreateTodo>
   }
 
   validated(): Result<InputCreateTodoDto, ValidationError> {
+    return this.validator.validate(this.src);
+  }
+}
+
+class Todo {
+  @IsNotEmpty({ message: "Property 'description' is required" })
+  @IsString({ message: "Property 'description' should be a string" })
+  @MaxLength(256, { message: "Property 'description' cannot have more than 256 characters" })
+  description: string;
+
+  constructor(props: any) {
+    this.description = props?.description;
+  }
+}
+
+export class InputCreateTodoClassValidator extends ValidatedInput<InputCreateTodo> {
+  constructor(private src: unknown) {
+    super(new ClassValidator(Todo));
+  }
+
+  validated(): Result<InputCreateTodo, ValidationError> {
     return this.validator.validate(this.src);
   }
 }

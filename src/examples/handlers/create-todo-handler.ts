@@ -1,6 +1,16 @@
 import { CreateTodoOperator } from "../controllers/create-todo-operator";
-import { InputCreateTodoZodValidator } from "../controllers/create-todo-serializer";
+import {
+  InputCreateTodoZodValidator,
+  InputCreateTodoClassValidator,
+} from "../controllers/create-todo-serializer";
 import { CreateTodoUseCase } from "../usecases/create-todo-usecase";
+
+enum ValidatorKind {
+  CLASS_VALIDATOR = "class-validator",
+  ZOD = "zod",
+}
+
+const kind: ValidatorKind = ValidatorKind.CLASS_VALIDATOR;
 
 export async function handler(): Promise<void> {
   const src = {};
@@ -8,15 +18,21 @@ export async function handler(): Promise<void> {
   const usecase = new CreateTodoUseCase();
   const operator = new CreateTodoOperator(usecase);
 
-  const input = new InputCreateTodoZodValidator(src);
+  const input =
+    kind === ValidatorKind.CLASS_VALIDATOR
+      ? new InputCreateTodoClassValidator(src)
+      : new InputCreateTodoZodValidator(src);
+
   const result = await operator.exec(input);
   if (result.isErr()) {
     if (result.value.code === "ValidationError") {
-      console.error({ status: 400, body: result.value });
+      console.dir({ status: 400, body: result.value }, { depth: Infinity });
     } else {
-      console.error({ status: 500, body: result.value });
+      console.dir({ status: 500, body: result.value }, { depth: Infinity });
     }
   } else {
     console.info(result.value);
   }
 }
+
+handler();

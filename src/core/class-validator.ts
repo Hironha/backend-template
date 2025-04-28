@@ -17,7 +17,7 @@ export class ClassValidator<S extends ClassSchema<any>> implements Validator<S> 
 
   validate(value: unknown): Result<InstanceType<S>, ValidationError> {
     const target = new this.schema(value);
-    const errors = validateSync(target);
+    const errors = validateSync(target, { whitelist: true });
     if (errors.length > 0) {
       const mapper = new ClassValidatorErrorMapper();
       const constraints = mapper.mapToValidationConstraints(errors);

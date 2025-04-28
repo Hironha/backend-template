@@ -2,7 +2,7 @@ import { ApiValidationError, type ApiError } from "./error";
 import { Err, type Result, type InferOk, type InferErr } from "@core/result";
 import { type ValidatedInput } from "./input";
 
-export abstract class Operator<I, O extends Result<any, any>> {
+export abstract class Operator<I extends Record<string, any>, O extends Result<any, any>> {
   protected abstract run(input: I): Promise<O>;
 
   async exec(

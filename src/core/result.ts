@@ -10,7 +10,7 @@ export interface ResultVariant<T, E> {
    */
   ok(): T | undefined;
   /**
-   * If `Result<T, E>` is `Err<E>` variant returns `E`, otherwise returns `undefiend`.
+   * If `Result<T, E>` is `Err<E>` variant returns `E`, otherwise returns `undefined`.
    */
   err(): E | undefined;
   /**
