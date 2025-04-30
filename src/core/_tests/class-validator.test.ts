@@ -8,7 +8,6 @@ import {
   ValidateNested,
 } from "class-validator";
 import { describe, it, expect } from "@jest/globals";
-import { type ValidationError } from "@core/validator";
 import { ClassValidator } from "@core/class-validator";
 
 describe("ClassValidator", () => {
@@ -50,9 +49,7 @@ describe("ClassValidator", () => {
     const validated = validator.validate(src);
 
     expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject({
-      constraints: [{ field: "name", message }],
-    });
+    expect(validated.err()).toMatchObject([{ field: "name", message }]);
   });
 
   it("should be able to convert complex object class validator error into internal validation constraints", () => {
@@ -109,17 +106,15 @@ describe("ClassValidator", () => {
     const validated = validator.validate(src);
 
     expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject({
-      constraints: [
-        { field: "name", message: "expected string" },
-        {
-          field: "config",
-          constraints: [
-            { field: "quantity", message: "expected quantity" },
-            { field: "nested", constraints: [{ field: "time", message: "expected string" }] },
-          ],
-        },
-      ],
-    });
+    expect(validated.err()).toMatchObject([
+      { field: "name", message: "expected string" },
+      {
+        field: "config",
+        constraints: [
+          { field: "quantity", message: "expected quantity" },
+          { field: "nested", constraints: [{ field: "time", message: "expected string" }] },
+        ],
+      },
+    ]);
   });
 });

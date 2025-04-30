@@ -1,4 +1,4 @@
-import { type ValidationError } from "./validator";
+import { type ValidationConstraint } from "./validator";
 
 export interface ApiErrorJson<T> {
   code: string;
@@ -36,10 +36,10 @@ export abstract class ApiError<C extends string = string, T extends Record<strin
   }
 }
 
-export class ApiValidationError extends ApiError<"ValidationError", ValidationError> {
-  override readonly details: ValidationError;
+export class ApiValidationError extends ApiError<"ValidationError", ValidationConstraint[]> {
+  override readonly details: ValidationConstraint[];
 
-  constructor(details: ValidationError) {
+  constructor(details: ValidationConstraint[]) {
     super("ValidationError", "Failed constrainst validation");
     this.details = details;
   }

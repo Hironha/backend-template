@@ -15,6 +15,7 @@
     "useDefineForClassFields": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "noUnusedLocals": true,
     "baseUrl": ".",
     "paths": {
       "@core/*": ["./src/core/*"]

@@ -4,10 +4,12 @@ import {
   isNestedValidationConstraint,
   type NestedValidationConstraint,
   type ValidationConstraint,
-  type ValidationError,
   type Validator,
 } from "@core/validator";
 
+// TODO: maybe this interface should be only for the private method `getIssueMessage`
+// because the mapping logic from `ZodIssue` to `ValidationConstraint` is always
+// the same, except that the user may want to configure it's mapper for error messages
 export interface ZodErrorMapper {
   toValidationConstraints(issues: z.ZodIssue[]): ValidationConstraint[];
 }
@@ -21,14 +23,14 @@ export class ZodValidator<T extends Record<string, any>> implements Validator<T>
     this.mapper = mapper ?? new DefaultZodErrorMapper();
   }
 
-  validate(value: unknown): Result<T, ValidationError> {
+  validate(value: unknown): Result<T, ValidationConstraint[]> {
     const result = this.schema.safeParse(value);
     if (result.success) {
       return new Ok(result.data);
     }
 
     const constraints = this.mapper.toValidationConstraints(result.error.errors);
-    return new Err({ constraints });
+    return new Err(constraints);
   }
 }
 
@@ -79,18 +81,19 @@ class DefaultZodErrorMapper implements ZodErrorMapper {
       }
     }
 
-    // guaranteed to not be undefined here but still necessary check to please the typescript compiler
-    if (target == null) {
-      throw new Error("Expected target constraint to exist");
-    }
-
-    return target;
+    // `target` is always defined since `path` is never an empty array
+    return target as NestedValidationConstraint;
   }
 
   private getIssueMessage(issue: z.ZodIssue): string {
     if (issue.code === z.ZodIssueCode.invalid_union_discriminator) {
       const options = issue.options.map((opt) => `'${String(opt)}'`).join(", ");
       return `Discriminator should be one of: ${options}`;
+    }
+
+    if (issue.code === z.ZodIssueCode.invalid_enum_value) {
+      const options = issue.options.map((opt) => `'${String(opt)}'`).join(", ");
+      return `Should be one of the valid enum values: ${options}`;
     }
 
     return issue.message;

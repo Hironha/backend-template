@@ -17,7 +17,7 @@ describe("InputCreateTodoZodValidator", () => {
     const validated = input.validated();
 
     expect(validated.isErr()).toBeTruthy();
-    expect(validated.unwrapErr().constraints).toMatchObject([
+    expect(validated.err()).toMatchObject([
       {
         field: "description",
         message: expect.any(String),

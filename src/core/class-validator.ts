@@ -2,39 +2,43 @@ import {
   validateSync,
   type ValidationError as ClassValidatorValidationError,
 } from "class-validator";
-import { type ValidatedInput } from "./input";
 import { Err, Ok, type Result } from "./result";
-import { type ValidationConstraint, type ValidationError, type Validator } from "./validator";
+import { type ValidationConstraint, type Validator } from "./validator";
 
 export type ClassSchema<T> = new (props: any) => T;
 
+export interface ClassValidatorErrorMapper {
+  toValidationConstraints(errors: ClassValidatorValidationError[]): ValidationConstraint[];
+}
+
 export class ClassValidator<S extends ClassSchema<any>> implements Validator<S> {
   private schema: S;
+  private mapper: ClassValidatorErrorMapper;
 
-  constructor(schema: S) {
+  constructor(schema: S, mapper?: ClassValidatorErrorMapper) {
     this.schema = schema;
+    this.mapper = mapper ?? new DefaultClassValidatorErrorMapper();
   }
 
-  validate(value: unknown): Result<InstanceType<S>, ValidationError> {
+  validate(value: unknown): Result<InstanceType<S>, ValidationConstraint[]> {
     const target = new this.schema(value);
     const errors = validateSync(target, { whitelist: true });
     if (errors.length > 0) {
-      const mapper = new ClassValidatorErrorMapper();
-      const constraints = mapper.mapToValidationConstraints(errors);
-      return new Err({ constraints });
+      const constraints = this.mapper.toValidationConstraints(errors);
+      return new Err(constraints);
     }
 
     return new Ok(target);
   }
 }
 
-class ClassValidatorErrorMapper {
-  mapToValidationConstraints(errors: ClassValidatorValidationError[]): ValidationConstraint[] {
+class DefaultClassValidatorErrorMapper implements ClassValidatorErrorMapper {
+  toValidationConstraints(errors: ClassValidatorValidationError[]): ValidationConstraint[] {
     const constraints: ValidationConstraint[] = [];
 
     for (const error of errors) {
       if (error.children != null && error.children.length > 0) {
-        const nestedConstraints = this.mapToValidationConstraints(error.children);
+        const nestedConstraints = this.toValidationConstraints(error.children);
         if (nestedConstraints.length > 0) {
           constraints.push({ field: error.property, constraints: nestedConstraints });
         }

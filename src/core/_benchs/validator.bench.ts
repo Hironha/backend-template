@@ -4,7 +4,6 @@ import {
   IsNotEmpty,
   IsString,
   registerDecorator,
-  type ValidationArguments,
   type ValidationOptions,
 } from "class-validator";
 import { ZodValidator } from "@core/zod-validator";

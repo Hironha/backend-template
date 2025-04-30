@@ -1,4 +1,4 @@
-import { ApiValidationError, type ApiError } from "./error";
+import { ApiValidationError } from "./error";
 import { Err, type Result, type InferOk, type InferErr } from "@core/result";
 import { type ValidatedInput } from "./input";
 

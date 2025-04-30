@@ -1,11 +1,7 @@
 import { type Result } from "@core/result";
 
 export interface Validator<T extends Record<string, any> = any> {
-  validate(value: unknown): Result<T, ValidationError>;
-}
-
-export interface ValidationError {
-  constraints: ValidationConstraint[];
+  validate(value: unknown): Result<T, ValidationConstraint[]>;
 }
 
 export type ValidationConstraint = FieldValidationConstraint | NestedValidationConstraint;

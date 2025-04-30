@@ -1,7 +1,7 @@
 import z from "zod";
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { type Result } from "@core/result";
-import { type ValidationError } from "@core/validator";
+import { type ValidationConstraint } from "@core/validator";
 import { ZodValidator } from "@core/zod-validator";
 import { ValidatedInput } from "@core/input";
 import { ClassValidator } from "@core/class-validator";
@@ -28,7 +28,7 @@ export class InputCreateTodoZodValidator extends ValidatedInput<InputCreateTodo>
     super(new ZodValidator(TodoSchema));
   }
 
-  validated(): Result<InputCreateTodoDto, ValidationError> {
+  validated(): Result<InputCreateTodoDto, ValidationConstraint[]> {
     return this.validator.validate(this.src);
   }
 }
@@ -49,7 +49,7 @@ export class InputCreateTodoClassValidator extends ValidatedInput<InputCreateTod
     super(new ClassValidator(Todo));
   }
 
-  validated(): Result<InputCreateTodo, ValidationError> {
+  validated(): Result<InputCreateTodo, ValidationConstraint[]> {
     return this.validator.validate(this.src);
   }
 }

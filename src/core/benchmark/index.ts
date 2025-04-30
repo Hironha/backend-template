@@ -1,6 +1,5 @@
 export { Suite } from "./suite";
 export { Task } from "./task";
-
 import { type Suite } from "./suite";
 
 export class Benchmark {
