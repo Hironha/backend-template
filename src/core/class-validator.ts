@@ -2,7 +2,7 @@ import {
   validateSync,
   type ValidationError as ClassValidatorValidationError,
 } from "class-validator";
-import { Err, Ok, type Result } from "./result";
+import { Left, Right, type Either } from "@core/either";
 import { type ValidationConstraint, type Validator } from "./validator";
 
 export type ClassSchema<T> = new (props: any) => T;
@@ -20,15 +20,15 @@ export class ClassValidator<S extends ClassSchema<any>> implements Validator<S> 
     this.mapper = mapper ?? new DefaultClassValidatorErrorMapper();
   }
 
-  validate(value: unknown): Result<InstanceType<S>, ValidationConstraint[]> {
+  validate(value: unknown): Either<ValidationConstraint[], InstanceType<S>> {
     const target = new this.schema(value);
     const errors = validateSync(target, { whitelist: true });
     if (errors.length > 0) {
       const constraints = this.mapper.toValidationConstraints(errors);
-      return new Err(constraints);
+      return new Left(constraints);
     }
 
-    return new Ok(target);
+    return new Right(target);
   }
 }
 

@@ -24,7 +24,7 @@ export async function handler(): Promise<void> {
       : new InputCreateTodoZodValidator(src);
 
   const result = await operator.exec(input);
-  if (result.isErr()) {
+  if (result.isLeft()) {
     if (result.value.code === "ValidationError") {
       console.dir({ status: 400, body: result.value }, { depth: Infinity });
     } else {

@@ -10,8 +10,8 @@ describe("ZodValidator", () => {
     const src = { name: "test" };
     const validated = validator.validate(src);
 
-    expect(validated.isOk()).toBeTruthy();
-    expect(validated.ok()).toMatchObject(src);
+    expect(validated.isRight()).toBeTruthy();
+    expect(validated.right()).toMatchObject(src);
   });
 
   it("validate non object returning empty field in validation constraint", () => {
@@ -19,8 +19,8 @@ describe("ZodValidator", () => {
     const Schema = z.object({ value: z.number() }, { message });
     const validator = new ZodValidator(Schema);
     const result = validator.validate(true);
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([{ field: "", message }]);
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([{ field: "", message }]);
   });
 
   it("convert simple zod error into internal validation constraints", () => {
@@ -31,8 +31,8 @@ describe("ZodValidator", () => {
     const src = { name: 12 };
     const validated = validator.validate(src);
 
-    expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject([{ field: "name", message }]);
+    expect(validated.isLeft()).toBeTruthy();
+    expect(validated.left()).toMatchObject([{ field: "name", message }]);
   });
 
   it("convert complex object zod error into internal validation constraints", () => {
@@ -58,8 +58,8 @@ describe("ZodValidator", () => {
     };
     const validated = validator.validate(src);
 
-    expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject([
+    expect(validated.isLeft()).toBeTruthy();
+    expect(validated.left()).toMatchObject([
       { field: "name", message: "expected string" },
       {
         field: "config",
@@ -79,8 +79,8 @@ describe("ZodValidator", () => {
 
     const validator = new ZodValidator(Schema);
     const result = validator.validate({});
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([
       { field: "kind", message: "Discriminator should be one of: 'cat', 'dog'" },
     ]);
   });
@@ -96,8 +96,8 @@ describe("ZodValidator", () => {
 
     const validator = new ZodValidator(Schema);
     const result = validator.validate({ traits: {} });
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([
       { field: "name", message: "Property 'name' is required" },
       {
         field: "traits",
@@ -121,8 +121,8 @@ describe("ZodValidator", () => {
 
     const validator = new ZodValidator(Schema);
     const result = validator.validate({});
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([{ field: "value", message: unionMessage }]);
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([{ field: "value", message: unionMessage }]);
   });
 
   it("convert tuple zod error into internal validation constraints", () => {
@@ -133,8 +133,8 @@ describe("ZodValidator", () => {
 
     const validator = new ZodValidator(Schema);
     const result = validator.validate({});
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([{ field: "value", message }]);
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([{ field: "value", message }]);
   });
 
   it("convert conditional validation errors into internal validation constraints", () => {
@@ -174,8 +174,8 @@ describe("ZodValidator", () => {
       merchantName: "test",
       level: Level.ACCOUNT,
     });
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([
       {
         field: "accountId",
         message: `Required when level is '${Level.ACCOUNT}'`,
@@ -191,8 +191,8 @@ describe("ZodValidator", () => {
       merchantName: "test",
       level: Level.ACCOUNTS,
     });
-    expect(result.isErr()).toBeTruthy();
-    expect(result.err()).toMatchObject([
+    expect(result.isLeft()).toBeTruthy();
+    expect(result.left()).toMatchObject([
       {
         field: "accountIds",
         message: `Required when level is '${Level.ACCOUNTS}'`,

@@ -7,8 +7,8 @@ describe("InputCreateTodoZodValidator", () => {
     const input = new InputCreateTodoZodValidator(src);
     const validated = input.validated();
 
-    expect(validated.isOk()).toBeTruthy();
-    expect(validated.ok()).toMatchObject(src);
+    expect(validated.isRight()).toBeTruthy();
+    expect(validated.right()).toMatchObject(src);
   });
 
   it("should fail validating into create todo dto", () => {
@@ -16,8 +16,8 @@ describe("InputCreateTodoZodValidator", () => {
     const input = new InputCreateTodoZodValidator(src);
     const validated = input.validated();
 
-    expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject([
+    expect(validated.isLeft()).toBeTruthy();
+    expect(validated.left()).toMatchObject([
       {
         field: "description",
         message: expect.any(String),

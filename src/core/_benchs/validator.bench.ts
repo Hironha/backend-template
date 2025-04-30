@@ -28,7 +28,7 @@ const PersonZodSchema = z.object({
 function validatePersonWithZod(input: unknown): void {
   const validator = new ZodValidator(PersonZodSchema);
   const result = validator.validate(input);
-  if (DEBUG && result.isErr()) {
+  if (DEBUG && result.isLeft()) {
     console.error("[ERROR] validate person with zod error");
     console.dir(result.value, { depth: Infinity });
   }
@@ -87,7 +87,7 @@ class PersonSchema {
 function validatePersonWithClassValidator(input: unknown): void {
   const validator = new ClassValidator(PersonSchema);
   const result = validator.validate(input);
-  if (DEBUG && result.isErr()) {
+  if (DEBUG && result.isLeft()) {
     console.error("[ERROR] validate person with class validator error");
     console.dir(result.value, { depth: Infinity });
   }
@@ -143,7 +143,7 @@ const AnimalZodSchema = z.union([
 function validateAnimalWithZod(input: unknown) {
   const validator = new ZodValidator(AnimalZodSchema);
   const result = validator.validate(input);
-  if (DEBUG && result.isErr()) {
+  if (DEBUG && result.isLeft()) {
     console.error("[ERROR] validate animal with zod validator error");
     console.dir(result.value, { depth: Infinity });
   }
@@ -182,7 +182,7 @@ class Animal {
 function validateAnimalWithClassValidator(input: unknown) {
   const validator = new ClassValidator(Animal);
   const result = validator.validate(input);
-  if (DEBUG && result.isErr()) {
+  if (DEBUG && result.isLeft()) {
     console.error("[ERROR] validate animal with class-validator  error");
     console.dir(result.value, { depth: Infinity });
   }

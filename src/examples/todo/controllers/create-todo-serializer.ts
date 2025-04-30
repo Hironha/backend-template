@@ -1,6 +1,6 @@
 import z from "zod";
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
-import { type Result } from "@core/result";
+import { type Either } from "@core/either";
 import { type ValidationConstraint } from "@core/validator";
 import { ZodValidator } from "@core/zod-validator";
 import { ValidatedInput } from "@core/input";
@@ -11,7 +11,7 @@ import { type InputCreateTodoDto } from "../dtos/create-todo-dto";
 
 export interface InputCreateTodo extends InputCreateTodoDto {}
 
-export type OutputCreateTodo = Result<TodoEntity, TodoError>;
+export type OutputCreateTodo = Either<TodoError, TodoEntity>;
 
 const TodoSchema = z.object({
   description: z
@@ -28,7 +28,7 @@ export class InputCreateTodoZodValidator extends ValidatedInput<InputCreateTodo>
     super(new ZodValidator(TodoSchema));
   }
 
-  validated(): Result<InputCreateTodoDto, ValidationConstraint[]> {
+  validated(): Either<ValidationConstraint[], InputCreateTodoDto> {
     return this.validator.validate(this.src);
   }
 }
@@ -49,7 +49,7 @@ export class InputCreateTodoClassValidator extends ValidatedInput<InputCreateTod
     super(new ClassValidator(Todo));
   }
 
-  validated(): Result<InputCreateTodo, ValidationConstraint[]> {
+  validated(): Either<ValidationConstraint[], InputCreateTodo> {
     return this.validator.validate(this.src);
   }
 }

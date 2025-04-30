@@ -1,17 +1,17 @@
 import { ApiValidationError } from "./error";
-import { Err, type Result, type InferOk, type InferErr } from "@core/result";
+import { Left, type Either, type InferLeft, type InferRight } from "./either";
 import { type ValidatedInput } from "./input";
 
-export abstract class Operator<I extends Record<string, any>, O extends Result<any, any>> {
+export abstract class Operator<I extends Record<string, any>, O extends Either<any, any>> {
   protected abstract run(input: I): Promise<O>;
 
   async exec(
     input: ValidatedInput<I>,
-  ): Promise<Result<InferOk<O>, InferErr<O> | ApiValidationError>> {
+  ): Promise<Either<ApiValidationError, InferLeft<O> | InferRight<O>>> {
     const dto = input.validated();
-    if (dto.isErr()) {
+    if (dto.isLeft()) {
       const error = new ApiValidationError(dto.value);
-      return new Err(error);
+      return new Left(error);
     }
 
     return this.run(dto.value);

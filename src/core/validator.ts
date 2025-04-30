@@ -1,7 +1,7 @@
-import { type Result } from "@core/result";
+import { type Either } from "./either";
 
 export interface Validator<T extends Record<string, any> = any> {
-  validate(value: unknown): Result<T, ValidationConstraint[]>;
+  validate(value: unknown): Either<ValidationConstraint[], T>;
 }
 
 export type ValidationConstraint = FieldValidationConstraint | NestedValidationConstraint;

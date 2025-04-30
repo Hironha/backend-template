@@ -1,5 +1,5 @@
 import z from "zod";
-import { Err, Ok, type Result } from "@core/result";
+import { Left, Right, type Either } from "./either";
 import {
   isNestedValidationConstraint,
   type NestedValidationConstraint,
@@ -23,14 +23,14 @@ export class ZodValidator<T extends Record<string, any>> implements Validator<T>
     this.mapper = mapper ?? new DefaultZodErrorMapper();
   }
 
-  validate(value: unknown): Result<T, ValidationConstraint[]> {
+  validate(value: unknown): Either<ValidationConstraint[], T> {
     const result = this.schema.safeParse(value);
     if (result.success) {
-      return new Ok(result.data);
+      return new Right(result.data);
     }
 
     const constraints = this.mapper.toValidationConstraints(result.error.errors);
-    return new Err(constraints);
+    return new Left(constraints);
   }
 }
 

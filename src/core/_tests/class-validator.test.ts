@@ -26,8 +26,8 @@ describe("ClassValidator", () => {
     const src = { name: "test" };
     const validated = validator.validate(src);
 
-    expect(validated.isOk()).toBeTruthy();
-    expect(validated.ok()).toMatchObject(src);
+    expect(validated.isRight()).toBeTruthy();
+    expect(validated.right()).toMatchObject(src);
   });
 
   it("should be able to convert simple zod error into internal validation constraints", () => {
@@ -48,8 +48,8 @@ describe("ClassValidator", () => {
     const src = { name: 12 };
     const validated = validator.validate(src);
 
-    expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject([{ field: "name", message }]);
+    expect(validated.isLeft()).toBeTruthy();
+    expect(validated.left()).toMatchObject([{ field: "name", message }]);
   });
 
   it("should be able to convert complex object class validator error into internal validation constraints", () => {
@@ -105,8 +105,8 @@ describe("ClassValidator", () => {
     };
     const validated = validator.validate(src);
 
-    expect(validated.isErr()).toBeTruthy();
-    expect(validated.err()).toMatchObject([
+    expect(validated.isLeft()).toBeTruthy();
+    expect(validated.left()).toMatchObject([
       { field: "name", message: "expected string" },
       {
         field: "config",
