@@ -7,7 +7,7 @@ export abstract class Operator<I extends Record<string, any>, O extends Either<a
 
   async exec(
     input: ValidatedInput<I>,
-  ): Promise<Either<ApiValidationError, InferLeft<O> | InferRight<O>>> {
+  ): Promise<Either<ApiValidationError | InferLeft<O>, InferRight<O>>> {
     const dto = input.validated();
     if (dto.isLeft()) {
       const error = new ApiValidationError(dto.value);

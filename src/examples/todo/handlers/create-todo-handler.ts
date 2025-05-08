@@ -27,6 +27,8 @@ export async function handler(): Promise<void> {
   if (result.isLeft()) {
     if (result.value.code === "ValidationError") {
       console.dir({ status: 400, body: result.value }, { depth: Infinity });
+    } else if (result.value.code === "TodoAlreadyExists") {
+      console.dir({ status: 409, body: result.value }, { depth: Infinity });
     } else {
       console.dir({ status: 500, body: result.value }, { depth: Infinity });
     }

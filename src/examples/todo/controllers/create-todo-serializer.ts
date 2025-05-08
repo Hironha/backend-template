@@ -6,12 +6,12 @@ import { ZodValidator } from "@core/zod-validator";
 import { ValidatedInput } from "@core/input";
 import { ClassValidator } from "@core/class-validator";
 import { type TodoEntity } from "../entities/todo-entity";
-import { type TodoError } from "../errors/todo";
+import { type TodoAlreadyExistsError, type TodoError } from "../errors/todo";
 import { type InputCreateTodoDto } from "../dtos/create-todo-dto";
 
 export interface InputCreateTodo extends InputCreateTodoDto {}
 
-export type OutputCreateTodo = Either<TodoError, TodoEntity>;
+export type OutputCreateTodo = Either<TodoError | TodoAlreadyExistsError, TodoEntity>;
 
 const TodoSchema = z.object({
   description: z
