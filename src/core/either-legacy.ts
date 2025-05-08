@@ -31,11 +31,3 @@ export class RightLegacy<L, A> {
     return true;
   }
 }
-
-export const left = <L, A>(l: L): EitherLegacy<L, A> => {
-  return new LeftLegacy(l);
-};
-
-export const right = <L, A>(a: A): EitherLegacy<L, A> => {
-  return new RightLegacy<L, A>(a);
-};
