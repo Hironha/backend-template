@@ -1,23 +1,3 @@
-# Rspack project
+# Backend-Template
 
-## Setup
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-## Get started
-
-Start the dev server:
-
-```bash
-npm run dev
-```
-
-Build the app for production:
-
-```bash
-npm run build
-```
+This repository contains some core abstractions to help building a scalable backend system. Some utility types such as `Either<L, R>` improves error handling by making it explicit and typesafe.

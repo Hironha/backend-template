@@ -1,3 +1,17 @@
+/**
+ * An abstraction to represent a variable that may be a variant between two types.
+ * Usually useful for fallible operations which may return an error.
+ *
+ * @example
+ *
+ * function parseNumber(value: unknown): Either<Error, number> {
+ *  const parsed = Number(value);
+ *  if (Number.isNaN(parsed)) {
+ *    return new Left(new Error("Value is not a number"));
+ *  }
+ *  return new Right(parsed);
+ * }
+ */
 export type Either<L, R> = Left<L> | Right<R>;
 
 export type InferRight<E extends Either<any, any>> = ReturnType<E["unwrapRight"]>;

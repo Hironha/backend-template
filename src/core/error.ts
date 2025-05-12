@@ -7,6 +7,24 @@ export interface ApiErrorJson<T> {
   details?: T;
 }
 
+/**
+ * Stackless error for describing a service/business logic error.
+ * @example
+ * // error discriminated by code
+ * class TodoAlreadyExistsError extends ApiError<"TODO-001"> {
+ *  constructor(id: string) {
+ *    const message = `Todo with id ${id} already exists`;
+ *    super("TODO-001", message);
+ *  }
+ * }
+ *
+ * // without discrimination by code
+ * class TodoError extends ApiError {
+ *  constructor() {
+ *    super("TodoError", "Todo error")
+ *  }
+ * }
+ */
 export abstract class ApiError<C extends string = string, T extends Record<string, any> = never> {
   readonly code: C;
   readonly message: string;
