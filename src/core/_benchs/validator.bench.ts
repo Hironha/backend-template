@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod/v4";
 import {
   IsDate,
   IsNotEmpty,
@@ -14,15 +14,21 @@ const DEBUG = false;
 
 const PersonZodSchema = z.object({
   name: z.string({
-    required_error: "Property 'name' is required",
-    invalid_type_error: "Property 'name' should be a string",
+    error: (iss) =>
+      iss.input == null
+        ? "Property 'name' is required"
+        : "Property 'name' should be a string",
   }),
   dob: z
     .date({
-      required_error: "Property 'dob' is required",
-      invalid_type_error: "Property 'dob' should be a date",
+      error: (iss) =>
+        iss.input == null
+          ? "Property 'dob' is required"
+          : "Property 'dob' should be a string",
     })
-    .refine((d) => d.getTime() < Date.now(), { message: "Property 'dob' cannot be a future date" }),
+    .refine((d) => d.getTime() < Date.now(), {
+      error: "Property 'dob' cannot be a future date",
+    }),
 });
 
 function validatePersonWithZod(input: unknown): void {
@@ -50,7 +56,10 @@ function Refinement(config: RefinementConfig, options?: ValidationOptions) {
       options,
       validator: {
         validate(_value, args) {
-          const active = typeof config.when === "function" ? config.when(object) : config.when;
+          const active =
+            typeof config.when === "function"
+              ? config.when(object)
+              : config.when;
           const shouldValidate = active ?? true;
           if (!shouldValidate) {
             return true;
@@ -98,9 +107,13 @@ const goodPersonInput = {
   dob: new Date("2012-04-28T12:15:30.229Z"),
 };
 
-const goodPersonSuite = new Suite("Successful validation of person object", { times: 10_000 })
+const goodPersonSuite = new Suite("Successful validation of person object", {
+  times: 10_000,
+})
   .addTask(
-    new Task("Validation with zod").withInput(goodPersonInput).executes(validatePersonWithZod),
+    new Task("Validation with zod")
+      .withInput(goodPersonInput)
+      .executes(validatePersonWithZod),
   )
   .addTask(
     new Task("Validation with class-validator")
@@ -113,9 +126,13 @@ const badPersonInput = {
   dob: "test",
 };
 
-const badPersonSuite = new Suite("Failed validation of person object", { times: 10_000 })
+const badPersonSuite = new Suite("Failed validation of person object", {
+  times: 10_000,
+})
   .addTask(
-    new Task("Validation with zod").withInput(badPersonInput).executes(validatePersonWithZod),
+    new Task("Validation with zod")
+      .withInput(badPersonInput)
+      .executes(validatePersonWithZod),
   )
   .addTask(
     new Task("Validation with class-validator")
@@ -125,17 +142,21 @@ const badPersonSuite = new Suite("Failed validation of person object", { times: 
 
 const AnimalZodSchema = z.union([
   z.object({
-    kind: z.literal("cat", { required_error: "Property 'kind' is required" }),
+    kind: z.literal("cat", { error: "Property 'kind' is required" }),
     sound: z.literal("meow", {
-      required_error: "Property 'sound' is required",
-      message: "Property 'sound' should be 'meow' for cats",
+      error: (iss) =>
+        iss.input == null
+          ? "Property 'sound' is required"
+          : "Property 'sound' should be 'meow' for cats",
     }),
   }),
   z.object({
-    kind: z.literal("dog", { required_error: "Property 'kind' is required" }),
+    kind: z.literal("dog", { error: "Property 'kind' is required" }),
     sound: z.literal("woof", {
-      required_error: "Property 'sound' is required",
-      message: "Property 'sound' should be 'woof' for dogs",
+      error: (iss) =>
+        iss.input == null
+          ? "Property 'sound' is required"
+          : "Property 'sound' should be 'woof' for dogs",
     }),
   }),
 ]);
@@ -152,7 +173,9 @@ function validateAnimalWithZod(input: unknown) {
 class Animal {
   @IsNotEmpty({ message: "Property 'kind' is required" })
   @IsString({ message: "Property 'kind' should be a string" })
-  @Refinement({ validate: (self) => self.kind === "cat" || self.kind === "dog" })
+  @Refinement({
+    validate: (self) => self.kind === "cat" || self.kind === "dog",
+  })
   kind: string;
 
   @IsNotEmpty({ message: "Property 'sound' is required" })

@@ -1,4 +1,4 @@
-import z from "zod";
+import z from "zod/v4";
 import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { type Either } from "@core/either";
 import { type ValidationConstraint } from "@core/validator";
@@ -11,16 +11,23 @@ import { type InputCreateTodoDto } from "../dtos/create-todo-dto";
 
 export interface InputCreateTodo extends InputCreateTodoDto {}
 
-export type OutputCreateTodo = Either<TodoError | TodoAlreadyExistsError, TodoEntity>;
+export type OutputCreateTodo = Either<
+  TodoError | TodoAlreadyExistsError,
+  TodoEntity
+>;
 
 const TodoSchema = z.object({
   description: z
     .string({
-      required_error: "Property 'description' is required",
-      invalid_type_error: "Property 'description' should be a string",
+      error: (iss) =>
+        iss.input == null
+          ? "Property 'description' is required"
+          : "Propert 'description' should be a string",
     })
     .trim()
-    .max(256, { message: "Property 'description' cannot have more than 128 characters" }),
+    .max(256, {
+      error: "Property 'description' cannot have more than 256 characters",
+    }),
 });
 
 export class InputCreateTodoZodValidator extends ValidatedInput<InputCreateTodo> {
@@ -36,7 +43,9 @@ export class InputCreateTodoZodValidator extends ValidatedInput<InputCreateTodo>
 class Todo {
   @IsNotEmpty({ message: "Property 'description' is required" })
   @IsString({ message: "Property 'description' should be a string" })
-  @MaxLength(256, { message: "Property 'description' cannot have more than 256 characters" })
+  @MaxLength(256, {
+    message: "Property 'description' cannot have more than 256 characters",
+  })
   description: string;
 
   constructor(props: any) {
