@@ -35,7 +35,7 @@ export const isValidCPF = (cpf: string): boolean => {
   return true;
 };
 
-export function CPF(options?: ValidationOptions) {
+export function IsCPF(options?: ValidationOptions) {
   return function (object: Object, propertyName: string) {
     registerDecorator({
       name: "refinement",

@@ -5,7 +5,7 @@ import { type ValidationConstraint } from "@core/validator";
 import { ZodValidator } from "@core/zod-validator";
 import { ValidatedInput } from "@core/input";
 import { ClassValidator } from "@core/class-validator";
-import { isValidCPF, CPF } from "./cpf";
+import { isValidCPF, IsCPF } from "./cpf";
 
 export interface Person {
   name: string;
@@ -42,7 +42,7 @@ class PersonClass {
 
   @IsNotEmpty()
   @IsString()
-  @CPF({ message: "Property 'cpf' must be a valid CPF" })
+  @IsCPF({ message: "Property 'cpf' must be a valid CPF" })
   cpf: string;
 
   constructor(props: any) {
