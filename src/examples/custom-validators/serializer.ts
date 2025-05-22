@@ -46,7 +46,7 @@ class PersonClass {
   cpf: string;
 
   constructor(props: any) {
-    this.name = props?.description;
+    this.name = props?.name;
     this.cpf = props?.cpf;
   }
 }
